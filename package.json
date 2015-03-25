@@ -1,0 +1,27 @@
+{
+  "name": "frietappAPI",
+  "main": "server.js",
+  "version": "0.1.0",
+  "scripts": {
+    "start": "nodemon server.js",
+    "test": "istanbul cover node_modules/mocha/bin/_mocha -- -R spec"
+  },
+  "dependencies": {
+    "bcrypt-nodejs": "0.0.3",
+    "body-parser": "^1.0.2",
+    "express": "^4.1.1",
+    "jade": "*",
+    "mongoose": "^3.8.8",
+    "passport" : "~0.1.17",
+    "passport-http": "~0.2.2",
+    "passport-local" : "~0.1.6",    
+    "passport-facebook" : "~1.0.2", 
+    "passport-twitter" : "~1.0.2",  
+    "passport-google-oauth" : "~0.1.5"
+  },
+  "devDependencies": {
+    "chai": "^2.1.2",
+    "mocha": "^2.2.1",
+    "supertest": "^0.15.0"
+  }
+}
