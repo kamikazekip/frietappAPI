@@ -2,13 +2,18 @@
 var express = require('express');
 var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
-var groupController = require('./controllers/group');
+
 var path = require('path');
 
 var passport = require('passport');
-var authController = require('./controllers/auth');
-var userController = require('./controllers/user');
+
+//Require all the controllers
+var authController  = require('./controllers/auth');
+var userController  = require('./controllers/user');
 var loginController = require('./controllers/login');
+var groupController = require('./controllers/group');
+var orderController = require('./controllers/order');
+var dishController  = require('./controllers/dish');
 
 // Connect to the MongoDB
 mongoose.connect('mongodb://admin:admin@ds053139.mongolab.com:53139/frietapp');
@@ -51,15 +56,6 @@ router.route('/').get(authController.isAuthenticated ,function(req, res, next){
 	
 });
 
-// Create endpoint handlers for /groups
-router.route('/groups')
- .get(authController.isAuthenticated, groupController.getGroups);
-
-// Create endpoint handlers for /groups/:group_id
-router.route('/groups/:group_id')
-  .delete(authController.isAuthenticated, groupController.deleteGroup)
-  .post(authController.isAuthenticated, groupController.postGroup);
-
 // Create endpoint handlers for /users
 router.route('/users')
   .post(userController.postUsers)
@@ -71,7 +67,34 @@ router.route('/users/:username')
 router.route('/login')
   .post(authController.isAuthenticated, loginController.login)
 
-// Register all our routes with /api
+// Create endpoint handlers for /groups
+router.route('/groups')
+ .get(authController.isAuthenticated, groupController.getGroups);
+
+router.route('/groups/:group_id')
+  .delete(authController.isAuthenticated, groupController.deleteGroup)
+  .post(authController.isAuthenticated, groupController.postGroup)
+  .put(authController.isAuthenticated, groupController.putGroup);
+
+router.route('/groups/:group_id/orders')
+  .get(authController.isAuthenticated, orderController.getGroupOrders);
+
+router.route('/groups/:group_id/order')
+  .post(authController.isAuthenticated, orderController.postGroupOrder);
+
+router.route('/groups/:group_id/addUser/:username')
+  .post(authController.isAuthenticated, groupController.addUserToGroup);
+
+//Create endpoint handlers for /order
+router.route('/orders/:order_id')
+  .put(authController.isAuthenticated, orderController.putOrder);
+
+router.route('/orders/:order_id/dishes')
+  .get(authController.isAuthenticated, dishController.getDishes)
+
+router.route('/orders/:order_id/dish')
+  .post(authController.isAuthenticated, dishController.postDish);
+
 app.use('/', router);
 
 // Start the server

@@ -18,7 +18,7 @@ var UserSchema = new mongoose.Schema({
     default: 0,
     type: Number
   }
-});
+}, { versionKey: false });
 
 // Execute before each user.save() call
 UserSchema.pre('save', function(callback) {

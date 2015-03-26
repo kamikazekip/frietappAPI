@@ -1,13 +1,14 @@
 // Load required packages
 var Group = require('../models/group');
+var Order = require('../models/order');
 
 // Create endpoint /groups for POST
 exports.postGroup = function(req, res) {
   var group = new Group();
 
   group.name = req.params.group_id;
-  group.creator = {_id: req.user._id, name: req.user.username}
-  group.userIds = [req.user._id]
+  group.creator =  req.user.username;
+  group.users = [req.user.username]
 
   // Save the group and check for errors
   group.save(function(err) {
@@ -18,10 +19,30 @@ exports.postGroup = function(req, res) {
   });
 };
 
+exports.addUserToGroup = function(req, res){
+  var group_id = req.params.group_id;
+  var username = req.params.username;
+  Group.findByIdAndUpdate( group_id, {$push: {"users": username}}, function(err, group) {
+      if (err)
+        res.send(err);
+
+      res.json(group);
+  });
+};
+
+exports.putGroup = function(req, res){
+  var group_id = req.params.group_id;
+  Group.findByIdAndUpdate( group_id, {"name": req.body.name}, function(err, group){
+    if( err) 
+      res.send(err);
+    res.json(group);
+  });
+}
+
 // Create endpoint /groups for GET
 exports.getGroups = function(req, res) {
   // Use the Group model to find all groups
-  Group.find({ userIds: req.user._id }, function(err, groups) {
+  Group.find({ users: req.user.username }, function(err, groups) {
     if (err)
       res.send(err);
 
