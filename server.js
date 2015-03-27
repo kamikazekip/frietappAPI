@@ -8,12 +8,13 @@ var role = require('./controllers/connectroles')();
 var passport = require('passport');
 
 //Require all the controllers
-var authController  = require('./controllers/auth');
-var userController  = require('./controllers/user');
-var loginController = require('./controllers/login');
-var groupController = require('./controllers/group');
-var orderController = require('./controllers/order');
-var dishController  = require('./controllers/dish');
+var authController      = require('./controllers/auth');
+var userController      = require('./controllers/user');
+var loginController     = require('./controllers/login');
+var groupController     = require('./controllers/group');
+var orderController     = require('./controllers/order');
+var dishController      = require('./controllers/dish');
+var snackbarController  = require('./controllers/snackbar');
 
 // Connect to the MongoDB
 mongoose.connect('mongodb://admin:admin@ds053139.mongolab.com:53139/frietapp');
@@ -81,13 +82,18 @@ router.route('/groups/:group_id/addUser/:username')
 
 //Create endpoint handlers for /order
 router.route('/orders/:order_id')
-  .put(authController.isAuthenticated, orderController.putOrder);
+  .put(authController.isAuthenticated, orderController.putOrder)
+  .delete(authController.isAuthenticated, orderController.deleteOrder);
 
 router.route('/orders/:order_id/dishes')
   .get(authController.isAuthenticated, dishController.getDishes)
 
 router.route('/orders/:order_id/dish')
   .post(authController.isAuthenticated, dishController.postDish);
+
+//Create endpoint handlers for /snackbars
+router.route('/snackbars')
+  .get(authController.isAuthenticated, snackbarController.getSnackbars);
 
 app.use('/', router);
 

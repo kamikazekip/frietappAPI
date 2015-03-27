@@ -22,6 +22,10 @@ var newGroup = {
 	_id: ""
 }
 
+var newOrder = {
+	_id: ""
+}
+
 var base = {'Authorization': 'Basic YWRtaW46YWRtaW4=', 'Content-Type': 'application/json'};
 
 function makeGetRequest(route, statusCode, done){
@@ -71,6 +75,18 @@ function updateGroupName(route, json, statusCode, done){
 	});
 }
 
+function updateOrderActive(route, statusCode, done){
+	request(app).put(route).set(base)
+	.expect(statusCode)
+	.expect('Content-type', 'application/json; charset=utf-8').end(function(err, res){
+		if(err) {
+			done(err);
+		} else {
+			done(null, res);
+		}
+	});
+}
+
 function makeDeleteRequest(route, statusCode, done){
 	request(app).delete(route).set(base).expect(200).expect('Content-Type', 'application/json; charset=utf-8').end(function(err, res){
 		if(err) {
@@ -82,8 +98,8 @@ function makeDeleteRequest(route, statusCode, done){
 }
 
 describe('Testing /users', function(){
-	describe('Making a user', function(){
-		it('STEP 1: Make a test user in the database', function(done){
+	describe('Users', function(){
+		it('STEP 1: Register a test user', function(done){
 			newUser.username = "testUser" + (new Date).getTime();
 			addUserRequest('/users', newUser, 200, function(err, res){
 				if(err){ return done(err); }
@@ -94,7 +110,7 @@ describe('Testing /users', function(){
 				done();
 			});
 		});
-		it('STEP 2: Log in route', function(done){
+		it('STEP 2: Log in test user', function(done){
 			postRequestNoJSON('/login', 200, function(err, res){
 				if(err){ return done(err); }
 
@@ -103,6 +119,8 @@ describe('Testing /users', function(){
 				done();
 			});
 		});
+	});
+	describe('Groups', function(){
 		it('STEP 3: Making a group', function(done){
 			var url = '/groups/' + new Date().getTime();
 			postRequestNoJSON(url, 200, function(err, res){
@@ -138,21 +156,68 @@ describe('Testing /users', function(){
 			updateGroupName(url, {"name": "FrietIsLekkerEnzo"}, 200, function(err, res){
 				if(err){ return done(err); }
 
-				expect(res.body).to.not.be.null
+				expect(res.body).to.not.be.null;
 				expect(res.body._id).to.equals(newGroup._id);
 				done();
 			});
 		});
-		it('STEP 7: Delete the group', function(done){
+	});
+	describe('Orders', function(){
+		it('STEP 7: Adding a test order to the "FrietIsLekkerEnzo" group', function(done){
+			var url = '/groups/' + newGroup._id + '/order';
+			postRequestNoJSON(url, 200, function(err, res){
+				if(err){ return done(err); }
+
+				expect(res.body.group).to.not.be.null;
+				expect(res.body.group._id).to.equals(newGroup._id);
+				expect(res.body.order).to.not.be.null;
+				expect(res.body.order.creator).to.equals('admin');
+				newOrder._id = res.body.order._id;
+				done();
+			});
+		});
+		it('STEP 8: Get all orders in the "FrietIsLekkerEnzo" group', function(done){
+			var url = '/groups/' + newGroup._id + '/orders';
+			makeGetRequest(url, 200, function(err, res){
+				if(err){ return done(err); }
+
+				expect(res.body[0]._id).to.equals(newOrder._id);
+				expect(res.body[0].creator).to.equals('admin');
+				done();
+			});
+		});
+		it('STEP 9: Change the made order active status to false', function(done){
+			var url = '/orders/' + newOrder._id;
+			updateOrderActive(url, 200, function(err, res){
+				if(err){ return done(err); }
+
+				expect(res.body).to.not.be.null;
+				expect(res.body._id).to.equals(newOrder._id);
+				expect(res.body.creator).to.equals('admin');
+				done();
+			});
+		});
+	});
+	describe('Deleting junk', function(){
+		it('STEP 10: Delete the test order', function(done){
+			var url = '/orders/' + newOrder._id;
+			makeDeleteRequest(url, 200, function(err, res){
+				if(err){ return done(err); }
+
+				expect(res.body.message).to.not.be.null;
+				done();
+			});
+		});
+		it('STEP 11: Delete the test group', function(done){
 			var url = '/groups/' + newGroup._id;
 			makeDeleteRequest(url, 200, function(err, res){
 				if(err){ return done(err); }
 
-
+				expect(res.body.message).to.not.be.null;
 				done();
 			});
 		});
-		it('STEP 8: Delete the test user', function(done){
+		it('STEP 12: Delete the test user', function(done){
 			var deleteRoute = '/users/' + newUser.username;
 			makeDeleteRequest(deleteRoute, 200, function(err, res){
 				if(err){ return done(err); }

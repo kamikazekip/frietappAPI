@@ -48,3 +48,12 @@ exports.putOrder = function(req, res){
     res.json(order);
   });
 }
+
+exports.deleteOrder = function(req, res){
+  Order.remove({"_id": req.params.order_id}, function(err){
+    if(err)
+      res.send(err);
+
+    res.json({"message": "order " + req.params.order_id + " deleted!"});
+  });
+}
