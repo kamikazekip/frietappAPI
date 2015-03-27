@@ -17,8 +17,8 @@ block content
                 strong Password:
                 |  <span id='userInfoPassword'></span>
                 br
-                strong Rights:
-                |  <span id='userInfoRights'></span>
+                strong Roles:
+                |  <span id='userInfoRoles'></span>
         // /USER INFO
 
         // USER LIST
@@ -27,7 +27,7 @@ block content
             table
                 thead
                     th UserName
-                    th Rights
+                    th Roles
                     th Delete?
                 tbody
         // /USER LIST
@@ -38,7 +38,7 @@ block content
             fieldset
                 input#inputUserName(type='text', placeholder='Username')
                 input#inputUserPassword(type='password', placeholder='Password')
-                input#inputUserRights(type='number', placeholder = 'Rights')
+                input#inputUserRoles(type='text', placeholder = 'Role')
                 br
                 button#btnAddUser Add User
         // /ADD USER

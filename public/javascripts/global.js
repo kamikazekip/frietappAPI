@@ -33,7 +33,9 @@ function populateTable() {
         $.each(data, function(){
             tableContent += '<tr>';
             tableContent += '<td><a href="#" class="linkshowuser" rel="' + this.username + '">' + this.username + '</a></td>';
-            tableContent += '<td>' + this.rights + '</td>';
+            $.each(this.roles, function(index, value){
+                tableContent += '<td>' + value + '</td>';
+            });
             tableContent += '<td><a href="#" class="linkdeleteuser" rel="' + this.username + '">delete</a></td>';
             tableContent += '</tr>';
         });
@@ -61,7 +63,11 @@ function showUserInfo(event) {
     //Populate Info Box
     $('#userInfoUsername').text(thisUserObject.username);
     $('#userInfoPassword').text(thisUserObject.password);
-    $('#userInfoRights').text(thisUserObject.rights);
+    var roles = $.each(thisUserObject.roles, function(index, value){
+        roles += value;
+        roles += " ";
+    });
+    $('#userInfoRoles').text(roles);
 }
 
 // Add User
@@ -81,9 +87,8 @@ function addUser(event) {
         var newUser = {
             'username': $('#addUser fieldset input#inputUserName').val(),
             'password': $('#addUser fieldset input#inputUserPassword').val(),
-            'rights'  : $('#addUser fieldset input#inputUserRights').val()
+            'roles'  : $('#addUser fieldset input#inputUserRoles').val()
         }
-        console.log(newUser.rights);
 
         // Use AJAX to post the object to our adduser service
         $.ajax({
@@ -92,22 +97,17 @@ function addUser(event) {
             url: '/users',
             dataType: 'JSON'
         }).done(function( response ) {
-
             // Check for successful (blank) response
             if (response.isSuccessfull) {
-
                 // Clear the form inputs
                 $('#addUser fieldset input').val('');
 
                 // Update the table
                 populateTable();
-
             }
             else {
-
                 // If something goes wrong, alert the error message that our service returned
                 alert('Error: ' + response.Errormessage);
-
             }
         });
     }
@@ -136,17 +136,14 @@ function deleteUser(event) {
         }).done(function( response ) {
 
             // Check for a successful (blank) response
-            if (response.msg === '') {
+            if (response.isSuccessfull) {
+                // Update the table
+                populateTable();
             }
             else {
                 alert('Error: ' + response.msg);
             }
-
-            // Update the table
-            populateTable();
-
         });
-
     }
     else {
         // If they said no to the confirm, do nothing

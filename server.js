@@ -4,7 +4,7 @@ var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
 
 var path = require('path');
-
+var role = require('./controllers/connectroles')();
 var passport = require('passport');
 
 //Require all the controllers
@@ -46,14 +46,8 @@ app.use(passport.initialize());
 // Create our Express router
 var router = express.Router();
 
-router.route('/').get(authController.isAuthenticated ,function(req, res, next){
-  if(req.user.rights === 1){
+router.route('/').get(authController.isAuthenticated, role.can('do admin stuff'), function(req, res, next){
     res.render('index');
-  } else{
-    res.statusCode = 401;
-    res.send("Unauthorized - geen admin rechten!");
-  }
-	
 });
 
 // Create endpoint handlers for /users

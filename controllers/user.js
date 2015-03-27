@@ -8,8 +8,12 @@ exports.postUsers = function(req, res) {
     password: req.body.password
   });
 
-  if(req.body.rights){
-    user.rights = req.body.rights;
+  if(req.body.roles){
+    var roles = [];
+    roles.push(req.body.roles);
+    user.roles = roles;
+  } else {
+    user.roles = ["user"];
   }
 
   user.save(function(err) {

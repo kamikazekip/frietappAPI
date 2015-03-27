@@ -21,7 +21,7 @@ var newUser = {
 var base = {'Authorization': 'Basic YWRtaW46YWRtaW4=', 'Content-Type': 'application/json'};
 
 function makePostRequest(route, json, statusCode, done){
-	request(app).post(route).set({'Content-Type': 'application/json'}).send(json).expect(statusCode).expect('Content-type', 'application/json').end(function(err, res){
+	request(app).post(route).set({'Content-Type': 'application/json'}).send(json).expect(statusCode).expect('Content-type', 'application/json; charset=utf-8').end(function(err, res){
 		if(err) {
 			done(err);
 		} else {
@@ -31,7 +31,7 @@ function makePostRequest(route, json, statusCode, done){
 }
 
 function makeDeleteRequest(route, statusCode, done){
-	request(app).delete(route).set(base).expect(200).expect('Content-Type', 'application/json').end(function(err, res){
+	request(app).delete(route).set(base).expect(200).expect('Content-Type', 'application/json; charset=utf-8').end(function(err, res){
 		if(err) {
 			done(err);
 		} else {

@@ -1,6 +1,7 @@
 // Load required packages
 var mongoose = require('mongoose');
 var bcrypt = require('bcrypt-nodejs');
+var _ = require('underscore');
 
 // Define our user schema
 var UserSchema = new mongoose.Schema({
@@ -13,11 +14,7 @@ var UserSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  rights: {
-    required: true,
-    default: 0,
-    type: Number
-  }
+  roles: [String]
 }, { versionKey: false });
 
 // Execute before each user.save() call
@@ -45,6 +42,38 @@ UserSchema.methods.verifyPassword = function(password, callback) {
     callback(null, isMatch);
   });
 };
+
+UserSchema.methods.hasAnyRole = function(roles){
+    if(!Array.isArray(roles)){
+      roles = [roles];
+    }
+
+    var lowerCaseRoles = _.map(this.roles, function(role){ return role.toLowerCase(); });
+    for(var index in roles){
+      if(_.contains(lowerCaseRoles, roles[index].toLowerCase())){
+        // If any role matches, it's allright, we can return true;
+        return true;
+      }
+    };
+
+    return false;
+  };
+
+UserSchema.methods.hasAllRoles = function(roles){
+    if(!Array.isArray(roles)){
+      roles = [roles];
+    }
+
+    var lowerCaseRoles = _.map(this.roles, function(role){ return role.toLowerCase(); });
+    for(var index in roles){
+      if(!_.contains(lowerCaseRoles, roles[index].toLowerCase())){
+        // If any role doesn't match, we can return false.
+        return false;
+      }
+    };
+
+    return true;
+  };
 
 
 // Export the Mongoose model
