@@ -53,7 +53,7 @@ exports.getGroups = function(req, res) {
 // Create endpoint /groups/:group_id for DELETE
 exports.deleteGroup = function(req, res) {
   // Use the Group model to find a specific group and remove it
-  Group.remove({ userIds: req.user._id, _id: req.params.group_id }, function(err) {
+  Group.remove({_id: req.params.group_id, creator: req.user.username }, function(err) {
     if (err)
       res.send(err);
 

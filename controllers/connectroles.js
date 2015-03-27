@@ -9,7 +9,7 @@ module.exports = function(){
 	});
 
 	// Admins can do everything
-	roles.use('do admin stuff', function (req) {
+	roles.use('access admin resources', function (req) {
   		if(req.user.hasAnyRole('administrator')){
   			return true;
   		};

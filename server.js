@@ -46,7 +46,7 @@ app.use(passport.initialize());
 // Create our Express router
 var router = express.Router();
 
-router.route('/').get(authController.isAuthenticated, role.can('do admin stuff'), function(req, res, next){
+router.route('/').get(authController.isAuthenticated, role.can('access admin resources'), function(req, res, next){
     res.render('index');
 });
 
