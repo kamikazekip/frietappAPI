@@ -26,7 +26,7 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'img')));
 
 // Use the body-parser package in our application
 app.use(bodyParser.urlencoded({
@@ -93,7 +93,7 @@ router.route('/orders/:order_id/dish')
 
 //Create endpoint handlers for /snackbars
 router.route('/snackbars')
-  .get(authController.isAuthenticated, snackbarController.getSnackbars);
+  .get(authController.isAuthenticated, snackbarController.getSnackbarsDummy);
 
 app.use('/', router);
 

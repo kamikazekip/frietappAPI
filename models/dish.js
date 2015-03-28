@@ -9,5 +9,13 @@ var DishSchema   = new mongoose.Schema({
   date: Date
 }, { versionKey: false });
 
+DishSchema.path('date').validate(function(){
+	return this.date <= new Date();
+}, 'Creation date can\'t be in the future!');
+
+DishSchema.path('dish').validate(function(){
+	return this.dish.length > 2;
+}, 'The dish has to have 3 or more characters!');
+
 // Export the Mongoose model
 module.exports = mongoose.model('Dish', DishSchema);

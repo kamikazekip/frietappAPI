@@ -17,6 +17,14 @@ var UserSchema = new mongoose.Schema({
   roles: [String]
 }, { versionKey: false });
 
+UserSchema.path('username').validate(function(){
+  return this.username.length > 2;
+}, 'Username has to have 3 or more characters!');
+
+UserSchema.path('password').validate(function(){
+  return this.password.length > 2;
+}, 'Password has to have 3 or more characters!');
+
 // Execute before each user.save() call
 UserSchema.pre('save', function(callback) {
   var user = this;

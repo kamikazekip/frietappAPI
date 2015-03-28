@@ -63,6 +63,18 @@ function postRequestNoJSON(route, statusCode, done){
 	});
 }
 
+function postRequest(route, json, statusCode, done){
+	request(app).post(route).set(base).send(json)
+	.expect(statusCode)
+	.expect('Content-type', 'application/json; charset=utf-8').end(function(err, res){
+		if(err) {
+			done(err);
+		} else {
+			done(null, res);
+		}
+	});
+}
+
 function updateGroupName(route, json, statusCode, done){
 	request(app).put(route).set(base).send(json)
 	.expect(statusCode)
@@ -165,7 +177,7 @@ describe('Testing /users', function(){
 	describe('Orders', function(){
 		it('STEP 7: Adding a test order to the "FrietIsLekkerEnzo" group', function(done){
 			var url = '/groups/' + newGroup._id + '/order';
-			postRequestNoJSON(url, 200, function(err, res){
+			postRequest(url, {"snackbar": "De stip", "url": "http://url.com"}, 200, function(err, res){
 				if(err){ return done(err); }
 
 				expect(res.body.group).to.not.be.null;

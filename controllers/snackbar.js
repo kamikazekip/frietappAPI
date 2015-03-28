@@ -1,26 +1,41 @@
 var https = require('https');
 var qs = require('querystring');
 
-exports.getSnackbars = function(req, frietappres){
-	//https://api.eet.nu/venues?query=snackbar&max_distance=10&lat=51.6978162&lng=5.3548050
-	var chunks;
-	var str = req.url.split('?')[1];
+exports.getSnackbars = function(snackbarRequest, snackbarResponse){
+	var str = snackbarRequest.url.split('?')[1];
 	var querystrings = qs.parse(str);
-	var path = 'https://api.eet.nu/venues?query=snackbar&lat=' + querystrings.lat + "&long=" + querystrings.long
-	console.log(path);
-	
-	https.get(path, function(res) {
-	  res.setEncoding('utf8');
+
+	var url = 'https://api.eet.nu/venues?query=snackbar&geolocation=' + querystrings.lat + "," + querystrings.long
+	console.log(url);
+	var req = https.get(url, function(res) {
+	  console.log("statusCode: ", res.statusCode);
+	  console.log("headers: ", res.headers);
+
 	  res.on('data', function(d) {
-	    chunks = d;
+	  	snackbarResponse.json(d);
 	  });
-
-	  res.on('end', function(d){
-	  	frietappres.send(d);
-	  })
-
-	}).on('error', function(e) {
-	  console.error(e);
 	});
 
+	req.on('error', function(e) {
+	  console.error(e);
+	});
+}
+
+exports.getSnackbarsDummy = function(snackbarRequest, snackbarResponse){
+	snackbarResponse.json([{
+		"snackbar": "Cafetaria-twekkelerveld",
+		"url": "https://www.eet.nu/enschede/cafetaria-twekkelerveld"
+	},{
+		"snackbar": "De stip",
+		"url": "https://www.eet.nu/enschede/cafetaria-twekkelerveld"
+	},{
+		"snackbar": "De kromme patat",
+		"url": "https://www.eet.nu/enschede/cafetaria-twekkelerveld"
+	},{
+		"snackbar": "Kees Kroket",
+		"url": "https://www.eet.nu/enschede/cafetaria-twekkelerveld"
+	},{
+		"snackbar": "Freek Frikandel",
+		"url": "https://www.eet.nu/enschede/cafetaria-twekkelerveld"
+	},]);
 }

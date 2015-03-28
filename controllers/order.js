@@ -23,7 +23,8 @@ exports.postGroupOrder = function(req, res){
   order.date        = new Date();
   order.group_id    = req.params.group_id;
   order.active      = true
-  order.dishes  = []
+  order.dishes      = []
+  order.snackbar    = req.body
   order.save(function(err, newOrder){
     if(err)
       res.send(err);
