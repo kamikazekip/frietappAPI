@@ -5,7 +5,6 @@ var should = require('chai').should();
 var express = require('express');
 var passport = require('passport');
 var app = express();
-var user = require('../routes/users');
 var router = require('../server');
 var bodyParser = require('body-parser').json();
 
@@ -109,7 +108,7 @@ function makeDeleteRequest(route, statusCode, done){
 	});
 }
 
-describe('Testing /users', function(){
+describe('Testing the API', function(){
 	describe('Users', function(){
 		it('STEP 1: Register a test user', function(done){
 			newUser.username = "testUser" + (new Date).getTime();
@@ -188,7 +187,17 @@ describe('Testing /users', function(){
 				done();
 			});
 		});
-		it('STEP 8: Get all orders in the "FrietIsLekkerEnzo" group', function(done){
+		it('STEP 8: Getting snackbar suggestions for a new order', function(done){
+			var url = '/snackbars/?lat=51.6978162&long=5.3548050';
+			makeGetRequest(url, 200, function(err, res){
+				if(err){ return done(err); }
+
+				expect(res.body).to.be.array
+				expect(res.body[0].snackbar).to.not.be.null;
+				done();
+			});
+		});
+		it('STEP 9: Get all orders in the "FrietIsLekkerEnzo" group', function(done){
 			var url = '/groups/' + newGroup._id + '/orders';
 			makeGetRequest(url, 200, function(err, res){
 				if(err){ return done(err); }
@@ -198,7 +207,7 @@ describe('Testing /users', function(){
 				done();
 			});
 		});
-		it('STEP 9: Change the made order active status to false', function(done){
+		it('STEP 10: Change the made order active status to false', function(done){
 			var url = '/orders/' + newOrder._id;
 			updateOrderActive(url, 200, function(err, res){
 				if(err){ return done(err); }
@@ -211,7 +220,7 @@ describe('Testing /users', function(){
 		});
 	});
 	describe('Deleting junk', function(){
-		it('STEP 10: Delete the test order', function(done){
+		it('STEP 11: Delete the test order', function(done){
 			var url = '/orders/' + newOrder._id;
 			makeDeleteRequest(url, 200, function(err, res){
 				if(err){ return done(err); }
@@ -220,7 +229,7 @@ describe('Testing /users', function(){
 				done();
 			});
 		});
-		it('STEP 11: Delete the test group', function(done){
+		it('STEP 12: Delete the test group', function(done){
 			var url = '/groups/' + newGroup._id;
 			makeDeleteRequest(url, 200, function(err, res){
 				if(err){ return done(err); }
@@ -229,7 +238,7 @@ describe('Testing /users', function(){
 				done();
 			});
 		});
-		it('STEP 12: Delete the test user', function(done){
+		it('STEP 13: Delete the test user', function(done){
 			var deleteRoute = '/users/' + newUser.username;
 			makeDeleteRequest(deleteRoute, 200, function(err, res){
 				if(err){ return done(err); }

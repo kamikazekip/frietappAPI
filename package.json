@@ -19,7 +19,8 @@
     "passport-facebook" : "~1.0.2", 
     "passport-twitter" : "~1.0.2",  
     "passport-google-oauth" : "~0.1.5",
-    "underscore": "*"
+    "underscore": "*",
+    "socket.io": "^1.3.3"
   },
   "devDependencies": {
     "chai": "^2.1.2",
