@@ -42,7 +42,12 @@ exports.postGroupOrder = function(req, res){
 }
 
 exports.putOrder = function(req, res){
- 
+  /*
+  io = req.io;
+  var update = {"update" : "orders"};
+  io.emit("update", update);
+  console.log('order geplaatst');
+  */
   var order_id = req.params.order_id;
   Order.findOneAndUpdate({"_id": order_id}, {active: false}, function(err, order){
     if(err)

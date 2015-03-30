@@ -21,6 +21,8 @@ exports.postGroup = function(req, res) {
 
 exports.addUserToGroup = function(req, res){
   var group_id = req.params.group_id;
+
+
   var username = req.params.username;
   Group.findByIdAndUpdate( group_id, {$push: {"users": username}}, function(err, group) {
       if (err)
@@ -42,13 +44,31 @@ exports.putGroup = function(req, res){
 // Create endpoint /groups for GET
 exports.getGroups = function(req, res) {
   
-  
+
   // Use the Group model to find all groups
   Group.find({ users: req.user.username }, function(err, groups) {
-    if (err)
+    if (err){
       res.send(err);
+    }
+    else{
+         console.log(groups);
+        io = req.io;
+        var update = {"update" : "orders"};
+        io.on("connection", function (socket) {
 
-    res.json(groups);
+           for(var i = 0 ; i < groups.length; i ++){
+               // connecten met een room.
+                socket.join('room'+groups[i]._id);
+            }        
+            socket.join("1234");
+        });
+        update = {field: "roomsssss"};
+        io.to('room').emit("update", update);
+        
+        res.json(groups);
+    }
+      
+   
   });
 };
 
