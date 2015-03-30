@@ -42,6 +42,7 @@ exports.postGroupOrder = function(req, res){
 }
 
 exports.putOrder = function(req, res){
+ 
   var order_id = req.params.order_id;
   Order.findOneAndUpdate({"_id": order_id}, {active: false}, function(err, order){
     if(err)

@@ -2,6 +2,7 @@ var Order = require('../models/order');
 var Dish  = require('../models/dish');
 
 exports.getDishes = function(req, res){
+ 
   var order_id = req.params.order_id;
   Order.findOne({ "_id": order_id }, function(err, order){
     if(err)
@@ -16,6 +17,12 @@ exports.getDishes = function(req, res){
 }
 
 exports.postDish = function(req, res){
+  
+  io = req.io;
+  var update = {"update" : "orders"};
+  io.emit("update", update);
+  console.log('order geplaatst');
+      
   var dish       = new Dish();
 
   dish.creator     = req.user.username;

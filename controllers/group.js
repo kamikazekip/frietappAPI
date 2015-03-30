@@ -41,6 +41,8 @@ exports.putGroup = function(req, res){
 
 // Create endpoint /groups for GET
 exports.getGroups = function(req, res) {
+  
+  
   // Use the Group model to find all groups
   Group.find({ users: req.user.username }, function(err, groups) {
     if (err)
