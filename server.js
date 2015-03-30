@@ -22,6 +22,22 @@ mongoose.connect('mongodb://admin:admin@ds053139.mongolab.com:53139/frietapp');
 // Create our Express application
 var app = express();
 
+var http = require('http').createServer(app);
+var io = require("socket.io")(http);
+http.listen(8080, "127.0.0.1");
+
+
+io.on("connection", function (socket) {
+    var update = {field: "groups"};
+    console.log("A user is connected");
+    // to make things interesting, have it send every second
+        socket.emit("update", update);
+
+    socket.on("disconnect", function () {
+        "User disconnected";
+    });
+});
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -34,8 +50,14 @@ app.use(bodyParser.urlencoded({
 }));
 
 app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Origin", "http://192.168.1.103:3000");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+  res.header('Access-Control-Allow-Credentials', true);
+
+
+
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+  
   next();
 });
 
