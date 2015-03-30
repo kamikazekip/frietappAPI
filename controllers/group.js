@@ -51,7 +51,6 @@ exports.getGroups = function(req, res) {
       res.send(err);
     }
     else{
-         console.log(groups);
         io = req.io;
         var update = {"update" : "orders"};
         io.on("connection", function (socket) {
