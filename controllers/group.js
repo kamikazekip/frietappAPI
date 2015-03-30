@@ -2,6 +2,10 @@
 var Group = require('../models/group');
 var Order = require('../models/order');
 
+var app = require('express')();
+var http = require('http').createServer(app);
+var io = require("socket.io")(http);
+
 // Create endpoint /groups for POST
 exports.postGroup = function(req, res) {
   var group = new Group();
@@ -51,7 +55,6 @@ exports.getGroups = function(req, res) {
       res.send(err);
     }
     else{
-        var io = req.io;
         var update = {"update" : "orders"};
         io.on("connection", function (socket) {
 
