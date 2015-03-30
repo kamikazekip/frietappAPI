@@ -147,6 +147,6 @@ router.route('/snackbars')
 app.use('/', router);
 
 // Start the server
-app.listen(8000);
+app.listen(process.env.PORT || 8000);
 
 module.exports = router;
