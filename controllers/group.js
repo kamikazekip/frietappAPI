@@ -51,18 +51,18 @@ exports.getGroups = function(req, res) {
       res.send(err);
     }
     else{
-        io = req.io;
-        var update = {"update" : "orders"};
-        io.on("connection", function (socket) {
+        // io = req.io;
+        // var update = {"update" : "orders"};
+        // io.on("connection", function (socket) {
 
-           for(var i = 0 ; i < groups.length; i ++){
-               // connecten met een room.
-                socket.join('room'+groups[i]._id);
-            }        
-            socket.join("1234");
-        });
-        update = {field: "roomsssss"};
-        io.to('room').emit("update", update);
+        //    for(var i = 0 ; i < groups.length; i ++){
+        //        // connecten met een room.
+        //         socket.join('room'+groups[i]._id);
+        //     }        
+        //     socket.join("1234");
+        // });
+        // update = {field: "roomsssss"};
+        // io.to('room').emit("update", update);
         
         res.json(groups);
     }
