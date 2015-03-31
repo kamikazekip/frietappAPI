@@ -3,7 +3,7 @@
   "main": "server.js",
   "version": "0.1.0",
   "scripts": {
-    "start": "node server.js",
+    "start": "nodemon server.js",
     "test": "istanbul cover node_modules/mocha/bin/_mocha -- -R spec"
   },
   "dependencies": {

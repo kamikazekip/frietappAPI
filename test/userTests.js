@@ -1,10 +1,12 @@
 var request = require('supertest');
 var expect = require('chai').expect;
 var should = require('chai').should();
-
+var path = require('path');
 var express = require('express');
 var passport = require('passport');
 var app = express();
+app.set('views', path.join(__dirname, '../views'));
+app.set('view engine', 'jade');
 var router = require('../server');
 var bodyParser = require('body-parser').json();
 
@@ -22,6 +24,10 @@ var newGroup = {
 }
 
 var newOrder = {
+	_id: ""
+}
+
+var newDish = {
 	_id: ""
 }
 
@@ -66,7 +72,7 @@ function postRequest(route, json, statusCode, done){
 	request(app).post(route).set(base).send(json)
 	.expect(statusCode)
 	.expect('Content-type', 'application/json; charset=utf-8').end(function(err, res){
-		if(err) {
+		if(err) {var path = require('path');
 			done(err);
 		} else {
 			done(null, res);
@@ -110,7 +116,7 @@ function makeDeleteRequest(route, statusCode, done){
 
 describe('Testing the API', function(){
 	describe('Users', function(){
-		it('STEP 1: Register a test user', function(done){
+		it('TEST 1: Register a test user', function(done){
 			newUser.username = "testUser" + (new Date).getTime();
 			addUserRequest('/users', newUser, 200, function(err, res){
 				if(err){ return done(err); }
@@ -121,7 +127,7 @@ describe('Testing the API', function(){
 				done();
 			});
 		});
-		it('STEP 2: Log in test user', function(done){
+		it('TEST 2: Log in test user', function(done){
 			postRequestNoJSON('/login', 200, function(err, res){
 				if(err){ return done(err); }
 
@@ -130,9 +136,29 @@ describe('Testing the API', function(){
 				done();
 			});
 		});
+		it('TEST 3: Retreiving all users', function(done){
+			makeGetRequest('/users', 200, function(err, res){
+				if(err){ return done(err); }
+
+				expect(res.body).to.not.be.null;
+				expect(res.body).to.be.array;
+				done();
+			});
+		});
+		it('TEST 4: Accessing the admin panel', function(done){
+			request(app).get('/').set(base).expect(200)
+			.expect('Content-type', 'text/html; charset=utf-8').end(function(err, res){
+				if(err) {
+					return done(err);
+				} else {
+					expect(res.body).to.not.be.null;
+					done();
+				}
+			});
+		});
 	});
 	describe('Groups', function(){
-		it('STEP 3: Making a group', function(done){
+		it('TEST 3: Making a group', function(done){
 			var url = '/groups/' + new Date().getTime();
 			postRequestNoJSON(url, 200, function(err, res){
 				if(err){ return done(err); }
@@ -143,7 +169,7 @@ describe('Testing the API', function(){
 				done();
 			});
 		});
-		it('STEP 4: Getting groups of the user', function(done){
+		it('TEST 4: Getting groups of the user', function(done){
 			makeGetRequest('/groups', 200, function(err, res){
 				if(err){ return done(err); }
 
@@ -152,7 +178,7 @@ describe('Testing the API', function(){
 				done();
 			});
 		});
-		it('STEP 5: Adding a user to the group', function(done){
+		it('TEST 5: Adding a user to the group', function(done){
 			var url = '/groups/' + newGroup._id + '/addUser/sven'; 
 			postRequestNoJSON(url, 200, function(err, res){
 				if(err){ return done(err); }
@@ -162,7 +188,7 @@ describe('Testing the API', function(){
 				done();
 			});
 		});
-		it('STEP 6: Update the groupname to "FrietIsLekkerEnzo"', function(done){
+		it('TEST 6: Update the groupname to "FrietIsLekkerEnzo"', function(done){
 			var url = '/groups/' + newGroup._id;
 			updateGroupName(url, {"name": "FrietIsLekkerEnzo"}, 200, function(err, res){
 				if(err){ return done(err); }
@@ -174,7 +200,7 @@ describe('Testing the API', function(){
 		});
 	});
 	describe('Orders', function(){
-		it('STEP 7: Adding a test order to the "FrietIsLekkerEnzo" group', function(done){
+		it('TEST 7: Adding a test order to the "FrietIsLekkerEnzo" group', function(done){
 			var url = '/groups/' + newGroup._id + '/order';
 			postRequest(url, {"snackbar": "De stip", "url": "http://url.com"}, 200, function(err, res){
 				if(err){ return done(err); }
@@ -187,7 +213,7 @@ describe('Testing the API', function(){
 				done();
 			});
 		});
-		it('STEP 8: Getting snackbar suggestions for a new order', function(done){
+		it('TEST 8: Getting snackbar suggestions for a new order', function(done){
 			var url = '/snackbars/?lat=51.6978162&long=5.3548050';
 			makeGetRequest(url, 200, function(err, res){
 				if(err){ return done(err); }
@@ -197,7 +223,7 @@ describe('Testing the API', function(){
 				done();
 			});
 		});
-		it('STEP 9: Get all orders in the "FrietIsLekkerEnzo" group', function(done){
+		it('TEST 9: Get all orders in the "FrietIsLekkerEnzo" group', function(done){
 			var url = '/groups/' + newGroup._id + '/orders';
 			makeGetRequest(url, 200, function(err, res){
 				if(err){ return done(err); }
@@ -207,7 +233,7 @@ describe('Testing the API', function(){
 				done();
 			});
 		});
-		it('STEP 10: Change the made order active status to false', function(done){
+		it('TEST 10: Change the made order active status to false', function(done){
 			var url = '/orders/' + newOrder._id;
 			updateOrderActive(url, 200, function(err, res){
 				if(err){ return done(err); }
@@ -219,8 +245,34 @@ describe('Testing the API', function(){
 			});
 		});
 	});
+	describe("Dishes", function(){
+		it('TEST 11: Adding a dish ( frikandel ) to the made order', function(done){
+			var url = '/orders/' + newOrder._id + "/dish";
+			postRequest(url, { "dish": "Frikandel" }, 200, function(err, res){
+				if(err){ return done(err); }
+
+				expect(res.body.order).to.not.be.null;
+				expect(res.body.order._id).to.equals(newOrder._id);
+				expect(res.body.dish.dish).to.equals("Frikandel");
+				expect(res.body.dish.creator).to.equals("admin");
+				newDish._id = res.body.dish._id;
+				done();
+			});
+		});
+		it("TEST 12: Getting that dish ( frikandel ) from the made order", function(done){
+			var url = '/orders/' + newOrder._id + "/dishes";
+			makeGetRequest(url, 200, function(err, res){
+				if(err){ return done(err); }
+
+				expect(res.body[0]).to.not.be.null;
+				expect(res.body[0]._id).to.equals(newDish._id);
+				expect(res.body[0].creator).to.equals("admin");
+				done();
+			});
+		});
+	});
 	describe('Deleting junk', function(){
-		it('STEP 11: Delete the test order', function(done){
+		it('TEST 13: Delete the test order', function(done){
 			var url = '/orders/' + newOrder._id;
 			makeDeleteRequest(url, 200, function(err, res){
 				if(err){ return done(err); }
@@ -229,7 +281,7 @@ describe('Testing the API', function(){
 				done();
 			});
 		});
-		it('STEP 12: Delete the test group', function(done){
+		it('TEST 14: Delete the test group', function(done){
 			var url = '/groups/' + newGroup._id;
 			makeDeleteRequest(url, 200, function(err, res){
 				if(err){ return done(err); }
@@ -238,12 +290,21 @@ describe('Testing the API', function(){
 				done();
 			});
 		});
-		it('STEP 13: Delete the test user', function(done){
+		it('TEST 15: Delete the test user', function(done){
 			var deleteRoute = '/users/' + newUser.username;
 			makeDeleteRequest(deleteRoute, 200, function(err, res){
 				if(err){ return done(err); }
 
 				expect(res.body.isSuccessfull).to.equals(true);
+				done();
+			});
+		});
+		it('TEST 16: Delete the test dish', function(done){
+			var deleteRoute = '/dishes/' + newDish._id;
+			makeDeleteRequest(deleteRoute, 200, function(err, res){
+				if(err){ return done(err); }
+
+				expect(res.body.message).to.not.be.null;
 				done();
 			});
 		});

@@ -17,11 +17,6 @@ exports.getDishes = function(req, res){
 }
 
 exports.postDish = function(req, res){
-  
-  io = req.io;
-  var update = {"update" : "orders"};
-  io.emit("update", update);
-  console.log('order geplaatst');
       
   var dish       = new Dish();
 
@@ -43,5 +38,14 @@ exports.postDish = function(req, res){
         dish: newDish
       });
     });
+  });
+}
+
+exports.deleteDish = function(req, res){
+  Dish.remove({"_id": req.params.dish_id}, function(err){
+    if(err)
+      res.send(err);
+
+    res.json({"message": "dish " + req.params.dish_id + " deleted!"});
   });
 }

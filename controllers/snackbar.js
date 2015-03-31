@@ -6,36 +6,27 @@ exports.getSnackbars = function(snackbarRequest, snackbarResponse){
 	var querystrings = qs.parse(str);
 
 	var url = 'https://api.eet.nu/venues?query=snackbar&geolocation=' + querystrings.lat + "," + querystrings.long
-	console.log(url);
-	var req = https.get(url, function(res) {
-	  console.log("statusCode: ", res.statusCode);
-	  console.log("headers: ", res.headers);
 
-	  res.on('data', function(d) {
-	  	snackbarResponse.json(d);
-	  });
-	});
+	var req = https.get(url, function(result) {	 
+	  	var stringRepsonse = "";
 
-	req.on('error', function(e) {
-	  console.error(e);
-	});
-}
+	  	result.on('data', function(d) {
+	  		stringRepsonse += ("" + d);
+	  	});
 
-exports.getSnackbarsDummy = function(snackbarRequest, snackbarResponse){
-	snackbarResponse.json([{
-		"snackbar": "Cafetaria-twekkelerveld",
-		"url": "https://www.eet.nu/enschede/cafetaria-twekkelerveld"
-	},{
-		"snackbar": "De stip",
-		"url": "https://www.eet.nu/enschede/cafetaria-twekkelerveld"
-	},{
-		"snackbar": "De kromme patat",
-		"url": "https://www.eet.nu/enschede/cafetaria-twekkelerveld"
-	},{
-		"snackbar": "Kees Kroket",
-		"url": "https://www.eet.nu/enschede/cafetaria-twekkelerveld"
-	},{
-		"snackbar": "Freek Frikandel",
-		"url": "https://www.eet.nu/enschede/cafetaria-twekkelerveld"
-	},]);
+	  	result.on('error', function(e) {
+	  		console.error(e);
+		});
+
+  		result.on('end', function () {
+		    var jsonResponse = JSON.parse(stringRepsonse);
+		    var firstFiveResults = jsonResponse.results.splice(0,5);
+		    var snackbarArray = []
+		    for(var x = 0; x < firstFiveResults.length; x++){
+		    	snackbarArray.push({ snackbar: firstFiveResults[x].name, url: firstFiveResults[x].url })
+		    }
+		    snackbarArray.push({ snackbar: "Overig", url: "Sorry, geen url" })
+		    snackbarResponse.json(snackbarArray);
+		});
+	});	
 }
