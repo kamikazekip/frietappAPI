@@ -8,11 +8,15 @@ exports.getDishes = function(req, res){
     if(err)
       res.send(err);
 
-    Dish.find({ '_id': { $in: order.dishes } }, function(err, dishOrders){
-      if(err)
-        res.send(err);
-      res.json(dishOrders);
-    });
+    if(order){
+      Dish.find({ '_id': { $in: order.dishes } }, function(err, dishOrders){
+        if(err)
+          res.send(err);
+        res.json(dishOrders);
+      });
+    } else {
+      res.send("Deze order bestaat niet!");
+    }
   });
 }
 

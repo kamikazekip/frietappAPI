@@ -2,9 +2,6 @@
 var Group = require('../models/group');
 var Order = require('../models/order');
 
-var app = require('express')();
-var http = require('http').createServer(app);
-var io = require("socket.io")(http);
 
 // Create endpoint /groups for POST
 exports.postGroup = function(req, res) {
@@ -48,29 +45,14 @@ exports.putGroup = function(req, res){
 // Create endpoint /groups for GET
 exports.getGroups = function(req, res) {
   
-
   // Use the Group model to find all groups
   Group.find({ users: req.user.username }, function(err, groups) {
     if (err){
       res.send(err);
     }
     else{
-        var update = {"update" : "orders"};
-        io.on("connection", function (socket) {
-
-           for(var i = 0 ; i < groups.length; i ++){
-               // connecten met een room.
-                socket.join('room'+groups[i]._id);
-            }        
-            socket.join("1234");
-        });
-        update = {field: "roomsssss"};
-        io.to('room').emit("update", update);
-        
         res.json(groups);
     }
-      
-   
   });
 };
 

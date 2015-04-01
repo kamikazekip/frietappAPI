@@ -1,18 +1,34 @@
 // Load required packages
 var Group = require('../models/group');
 var Order = require('../models/order');
+var qs = require('querystring');
 
 exports.getGroupOrders = function(req, res){
+  var str = req.url.split('?')[1];
+  var queryStrings = qs.parse(str);
+
   var group_id = req.params.group_id;
   Group.findOne({ "_id": group_id }, function(err, group){
     if(err)
       res.send(err);
 
-    Order.find({ '_id': { $in: group.orders } }, function(err, orders){
-      if(err)
-        res.send(err);
-      res.json(orders);
-    });
+    if(group){
+      Order.find({ '_id': { $in: group.orders } }, function(err, orders){
+        if(err)
+          res.send(err);
+
+        if(Object.keys(queryStrings).length === 0){
+            res.json(orders);
+        } else {
+            orders.sort(function(a,b){
+              return a[queryStrings.orderBy] + b[queryStrings.orderBy]
+            });
+            res.json(orders);
+        }
+      });
+    } else {
+      res.send("Deze groep bestaat niet!");
+    }
   });
 }
 
@@ -42,12 +58,6 @@ exports.postGroupOrder = function(req, res){
 }
 
 exports.putOrder = function(req, res){
-  /*
-  io = req.io;
-  var update = {"update" : "orders"};
-  io.emit("update", update);
-  console.log('order geplaatst');
-  */
   var order_id = req.params.order_id;
   Order.findOneAndUpdate({"_id": order_id}, {active: false}, function(err, order){
     if(err)

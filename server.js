@@ -22,46 +22,8 @@ mongoose.connect('mongodb://admin:admin@ds053139.mongolab.com:53139/frietapp');
 // Create our Express application
 var app = express();
 
-// var http = require('http').createServer(app);
-// var io = require("socket.io")(http);
-// http.listen(8080, "https://desolate-bayou-9128.herokuapp.com/");
-
-// var update = {field: "groups"};
-
-
-
-// io.on("connection", function (socket) {
-//   var update = {field: "groups"};
-//   // connecten met een room.
-//   socket.join('room');
-
-//   //emitten naar alle gebruikers in een room.
-//   io.to('room').emit("update", update);
-
-
-    
-//     console.log("A user is connected");
-
-//     update = {field: "global"};
-//     io.emit("update", update);
-
-//     socket.on("disconnect", function () {
-//         "User disconnected";
-//     });
-//     var nsp = io.of('/frietapp');
-//     nsp.on('connection', function(socket){
-//       console.log('connected to frietapp namespace');
-      
-//     });
-
-// });
-
-
-
-
 // Make our db accessible to our router
 app.use(function(req,res,next){
-    //req.io = io;
     next();
 
 });

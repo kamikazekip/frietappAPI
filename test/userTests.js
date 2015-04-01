@@ -158,7 +158,7 @@ describe('Testing the API', function(){
 		});
 	});
 	describe('Groups', function(){
-		it('TEST 3: Making a group', function(done){
+		it('TEST 5: Making a group', function(done){
 			var url = '/groups/' + new Date().getTime();
 			postRequestNoJSON(url, 200, function(err, res){
 				if(err){ return done(err); }
@@ -169,7 +169,7 @@ describe('Testing the API', function(){
 				done();
 			});
 		});
-		it('TEST 4: Getting groups of the user', function(done){
+		it('TEST 6: Getting groups of the user', function(done){
 			makeGetRequest('/groups', 200, function(err, res){
 				if(err){ return done(err); }
 
@@ -178,7 +178,7 @@ describe('Testing the API', function(){
 				done();
 			});
 		});
-		it('TEST 5: Adding a user to the group', function(done){
+		it('TEST 7: Adding a user to the group', function(done){
 			var url = '/groups/' + newGroup._id + '/addUser/sven'; 
 			postRequestNoJSON(url, 200, function(err, res){
 				if(err){ return done(err); }
@@ -188,7 +188,7 @@ describe('Testing the API', function(){
 				done();
 			});
 		});
-		it('TEST 6: Update the groupname to "FrietIsLekkerEnzo"', function(done){
+		it('TEST 8: Update the groupname to "FrietIsLekkerEnzo"', function(done){
 			var url = '/groups/' + newGroup._id;
 			updateGroupName(url, {"name": "FrietIsLekkerEnzo"}, 200, function(err, res){
 				if(err){ return done(err); }
@@ -200,7 +200,7 @@ describe('Testing the API', function(){
 		});
 	});
 	describe('Orders', function(){
-		it('TEST 7: Adding a test order to the "FrietIsLekkerEnzo" group', function(done){
+		it('TEST 9: Adding a test order to the made group', function(done){
 			var url = '/groups/' + newGroup._id + '/order';
 			postRequest(url, {"snackbar": "De stip", "url": "http://url.com"}, 200, function(err, res){
 				if(err){ return done(err); }
@@ -213,7 +213,7 @@ describe('Testing the API', function(){
 				done();
 			});
 		});
-		it('TEST 8: Getting snackbar suggestions for a new order', function(done){
+		it('TEST 10: Getting snackbar suggestions for a new order', function(done){
 			var url = '/snackbars/?lat=51.6978162&long=5.3548050';
 			makeGetRequest(url, 200, function(err, res){
 				if(err){ return done(err); }
@@ -223,7 +223,7 @@ describe('Testing the API', function(){
 				done();
 			});
 		});
-		it('TEST 9: Get all orders in the "FrietIsLekkerEnzo" group', function(done){
+		it('TEST 11: Get all orders in the made group', function(done){
 			var url = '/groups/' + newGroup._id + '/orders';
 			makeGetRequest(url, 200, function(err, res){
 				if(err){ return done(err); }
@@ -233,7 +233,16 @@ describe('Testing the API', function(){
 				done();
 			});
 		});
-		it('TEST 10: Change the made order active status to false', function(done){
+		it('TEST 12: Get all orders in the made group ordered by active', function(done){
+			var url = '/groups/' + newGroup._id + '/orders?orderBy=active';
+			makeGetRequest(url, 200, function(err, res){
+				if(err){ return done(err); }
+
+				expect(res.body[0].active).to.equals(true);
+				done();
+			});
+		});
+		it('TEST 13: Change the made order active status to false', function(done){
 			var url = '/orders/' + newOrder._id;
 			updateOrderActive(url, 200, function(err, res){
 				if(err){ return done(err); }
@@ -246,7 +255,7 @@ describe('Testing the API', function(){
 		});
 	});
 	describe("Dishes", function(){
-		it('TEST 11: Adding a dish ( frikandel ) to the made order', function(done){
+		it('TEST 14: Adding a dish ( frikandel ) to the made order', function(done){
 			var url = '/orders/' + newOrder._id + "/dish";
 			postRequest(url, { "dish": "Frikandel" }, 200, function(err, res){
 				if(err){ return done(err); }
@@ -259,7 +268,7 @@ describe('Testing the API', function(){
 				done();
 			});
 		});
-		it("TEST 12: Getting that dish ( frikandel ) from the made order", function(done){
+		it("TEST 15: Getting that dish ( frikandel ) from the made order", function(done){
 			var url = '/orders/' + newOrder._id + "/dishes";
 			makeGetRequest(url, 200, function(err, res){
 				if(err){ return done(err); }
@@ -272,7 +281,7 @@ describe('Testing the API', function(){
 		});
 	});
 	describe('Deleting junk', function(){
-		it('TEST 13: Delete the test order', function(done){
+		it('TEST 16: Delete the test order', function(done){
 			var url = '/orders/' + newOrder._id;
 			makeDeleteRequest(url, 200, function(err, res){
 				if(err){ return done(err); }
@@ -281,7 +290,7 @@ describe('Testing the API', function(){
 				done();
 			});
 		});
-		it('TEST 14: Delete the test group', function(done){
+		it('TEST 17: Delete the test group', function(done){
 			var url = '/groups/' + newGroup._id;
 			makeDeleteRequest(url, 200, function(err, res){
 				if(err){ return done(err); }
@@ -290,7 +299,7 @@ describe('Testing the API', function(){
 				done();
 			});
 		});
-		it('TEST 15: Delete the test user', function(done){
+		it('TEST 18: Delete the test user', function(done){
 			var deleteRoute = '/users/' + newUser.username;
 			makeDeleteRequest(deleteRoute, 200, function(err, res){
 				if(err){ return done(err); }
@@ -299,7 +308,7 @@ describe('Testing the API', function(){
 				done();
 			});
 		});
-		it('TEST 16: Delete the test dish', function(done){
+		it('TEST 19: Delete the test dish', function(done){
 			var deleteRoute = '/dishes/' + newDish._id;
 			makeDeleteRequest(deleteRoute, 200, function(err, res){
 				if(err){ return done(err); }
