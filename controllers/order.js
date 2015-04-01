@@ -23,7 +23,6 @@ exports.getGroupOrders = function(req, res){
             orders.sort(function(a,b){
               return b[queryStrings.orderBy] - a[queryStrings.orderBy]
             });
-            console.log(orders);
             res.json(orders);
         }
       });
