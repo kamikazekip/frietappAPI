@@ -174,7 +174,6 @@ describe('Testing the API', function(){
 				if(err){ return done(err); }
 
 				expect(res.body).to.be.array;
-				expect(res.body[0].creator).to.equals('admin');
 				done();
 			});
 		});
