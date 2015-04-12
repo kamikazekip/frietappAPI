@@ -57,6 +57,8 @@ exports.postGroupOrder = function(req, res){
   order.dishes      = []
   if(req.body.telephone == undefined){
     req.body.telephone = "0000000"
+  } else {
+    req.body.telephone = req.body.telephone.replace(/\s+/g, '');
   }
   order.snackbar    = req.body
   order.save(function(err, newOrder){
