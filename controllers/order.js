@@ -18,11 +18,26 @@ exports.getGroupOrders = function(req, res){
           res.send(err);
 
         if(Object.keys(queryStrings).length === 0){
+            orders.sort(function(a, b){
+              if(a["date"].getDate() < b["date"].getDate()) return 1;
+              if(a["date"].getDate() > b["date"].getDate()) return -1;
+              return 0;
+            });
+            for(var x = 0; x < orders.length; x++){
+              console.log(orders[x]["date"].getDate())
+            }
             res.json(orders);
         } else {
             orders.sort(function(a,b){
-              return b[queryStrings.orderBy] - a[queryStrings.orderBy]
+              if (b[queryStrings.orderBy] < a[queryStrings.orderBy]) return -1;
+              if (b[queryStrings.orderBy] > a[queryStrings.orderBy]) return 1;
+              if(b["date"].getDate() < a["date"].getDate()) return -1;
+              if(b["date"].getDate() > a["date"].getDate()) return 1;
+              return 0;
             });
+            for(var x = 0; x < orders.length; x++){
+              console.log(orders[x]["date"].getDate())
+            }
             res.json(orders);
         }
       });
