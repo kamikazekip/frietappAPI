@@ -23,9 +23,9 @@ exports.getSnackbars = function(snackbarRequest, snackbarResponse){
 		    var firstFiveResults = jsonResponse.results.splice(0,5);
 		    var snackbarArray = []
 		    for(var x = 0; x < firstFiveResults.length; x++){
-		    	snackbarArray.push({ snackbar: firstFiveResults[x].name, url: firstFiveResults[x].url })
+		    	snackbarArray.push({ snackbar: firstFiveResults[x].name, url: firstFiveResults[x].url, telephone: firstFiveResults[x].telephone })
 		    }
-		    snackbarArray.push({ snackbar: "Overig", url: "Sorry, geen url" })
+		    snackbarArray.push({ snackbar: "Overig", url: "Sorry, geen url", telephone: "00000000" })
 		    snackbarResponse.json(snackbarArray);
 		});
 	});	
