@@ -55,6 +55,9 @@ exports.postGroupOrder = function(req, res){
   order.group_id    = req.params.group_id;
   order.active      = true
   order.dishes      = []
+  if(req.body.telephone == undefined){
+    req.body.telephone = "0000000"
+  }
   order.snackbar    = req.body
   order.save(function(err, newOrder){
     if(err)

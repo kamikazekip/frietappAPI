@@ -8,7 +8,7 @@ var OrderSchema   = new mongoose.Schema({
   group_id: { type: String, ref: 'Group' },
   active: Boolean,
   dishes: [{ type: String, ref: 'Dish' }],
-  snackbar: { snackbar: String, url: String }
+  snackbar: { snackbar: String, url: String, telephone: String }
 }, { versionKey: false });
 
 OrderSchema.path('date').validate(function(){
