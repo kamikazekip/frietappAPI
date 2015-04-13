@@ -16,16 +16,25 @@ exports.postUsers = function(req, res) {
     user.roles = ["user"];
   }
 
-  user.save(function(err) {
-    if (err)
-      res.send(err);
+   User.find({username : req.body.username}, function (err, docs) {
+        if (docs.length){
+            res.json({
+              "isSuccessfull": false,
+              "userAlreadyExists": true
+            })
+        }else{
+            user.save(function(err) {
+              if (err)
+                res.send(err);
 
-    res.json({ 
-      "isSuccessfull": true,
-      "username": req.body.username,
-      "password": req.body.password
+              res.json({ 
+                "isSuccessfull": true,
+                "username": req.body.username,
+                "password": req.body.password
+              });
+            });
+        }
     });
-  });
 };
 
 // Create endpoint /api/users for GET
